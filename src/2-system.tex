@@ -1,0 +1,239 @@
+\section{Real-time vibration extraction system}\label{section:system}
+%% 本節では，評価対象である眞邉らの振動抽出FPGAシステムの概要について述べる．
+
+In this section, we provide an overview of the Real-time vibration extraction system of Manabe et al.
+
+\subsection{Gradient Calculation}\label{subsection:gradient}
+%% まずはじめに、入力グレースケール画像を平滑化した画像の勾配$l_x$,$l_y$から、
+%% 勾配角$\theta$が計算される。フレームバッファのメモリリソースを節約するため、
+%% $\theta$は1,2または3ビットに量子化される。$\theta$は以下の式で計算される。:
+
+First, the gradient angle $\theta$ is calculated from the gradients $l_x$ and $l_y$
+of the smoothed input grayscale image. To save memory resources in the frame buffer,
+$\theta$ is quantized to 1, 2 or 3 bits. The $\theta$ is computed by the following equation :
+
+
+\begin{equation}
+  \label{equ:grad_angle1}
+  \theta_3(x,y) = \left\lfloor \frac{4 \times {\rm atan2}(I_y(x,y),I_x(x,y))}{\pi} \right\rfloor\mod 8
+  \end{equation}
+
+\begin{equation}
+  \label{equ:grad_angle2}
+  \theta(x,y) = \left\lfloor \frac{\theta_3(x,y) + e(x,y)}{2^{3-Q}} \right\rfloor
+\end{equation}
+
+\begin{equation}
+  \label{equ:grad_angle3}
+  e(x,y) = (x+y)\mod 2^{3-Q}
+  \end{equation}
+
+%% $Q\in{1,2,3}$は量子化ビット幅、eはオフセットである.
+where $Q\in{1,2,3}$ is the quantization bit-width and e is the offset.
+
+
+
+\subsection{Feature Calculation}\label{subsection:feature}
+
+%% 先ほど算出した$\theta$から特徴量を算出する．特徴量には，照明変化に剛健で回転不変性の
+%% あるRI-HOG（Rotation-Invariant Histogram of Oriented Gradient）\cite{bib:RHOG}
+%% をベースにしたものを使用する．
+Calculate the features from the $\theta$ calculated earlier.
+The features are based on RIHOG (Rotation-Invariant Histogram of Oriented Gradient),
+which is rigid and rotationally invariant to illumination changes.
+To make the feature rotationally invariant,
+
+%% 量子化された$\theta$を復号し、３ビットの勾配角$\theta'$を算出する：
+
+%% \begin{equation}
+%%   \label{equ:theta_dash}
+%%   \theta'(x,y) = (2^{3-Q} \theta(x,y)-e(x,y)) \mod 8
+%% \end{equation}
+
+%% 特徴量を回転不変にするために、ピクセルを囲む$C \times C$の領域(セル)内
+%% の３ビットの相対勾配角をセル内の各ピクセルに対して求め、
+%% セル内の相対勾配角のヒストグラムを作成することで、簡略化されたRIHOG特徴量が計算されます。
+%% 相対勾配角が$i(0 i 7)$であるピクセルの数を$ni$とすると、特徴記述子$H$は次のように表されます：
+a simplified RIHOG feature is computed by finding the 3-bit relative gradient angle
+in the $C \times C$ region (cell) surrounding the pixel for each pixel
+in the cell and creating a histogram of the relative gradient angles in the cell.
+Let $ni$ be the number of pixels whose relative gradient angle is $i(0 \leq i \leq 7)$,
+then the feature descriptor $H$ is expressed as follows:
+
+\begin{align}
+  \label{equation:equ_RIHOG}
+  H(x,y) = (n_0,n_1,n_2,...,n_7)^T \\
+  \left(  0 \leq n_i \leq C^2 -1 , \sum_{i=0}^{7}n_i = C^2 -1  \right) \notag
+\end{align}
+
+
+
+\subsection{Optical Flow Estimation Using Feature Matching}\label{label:estimation}
+
+%% 現在のフレームの特徴量$H_k$と前のフレームの特徴量$K_{k-1}$をもとに、
+%% パターンマッチを用いて各ピクセルのオプティカルフローを求める。
+%% 点$(x,y)$におけるオプティカルフローが$F(x,y)$である場合、$(x,y)$は前のフレーム
+%% $(x-y,y-v)$に相当する。
+%% ヒストグラム交差(HI)を用いて類似度$S(u,v)$を求め,
+%% 探索窓の中から$S(u,v)$が最大になる$(u,v)$の探索を行う。
+%% $S(u,v)$は次のように求められる：
+
+
+Based on the feature $H_k$ of the current frame and the feature $K_{k-1}$ of the previous frame,
+the optical flow of each pixel is obtained using pattern matching.
+If the optical flow at point $(x,y)$ is $F(x,y)$,
+then $(x,y)$ corresponds to the previous frame $(x-y,y-v)$.
+Calculate the similarity $S(u,v)$ using histogram intersection (HI)
+and search for $(u,v)$ in the search window where $S(u,v)$ is the largest.
+The $S(u,v)$ is obtained as follows:
+
+
+\begin{equation}
+  \label{equ:similarity}
+  S(u,v) = \max(S_{raw}(u,v)-p(u,v),0)
+\end{equation}
+
+\begin{equation}
+  \label{equ:similarity2}
+  S_{raw}(u,v) = HI(H_k(x,y),H_{k-1}(x-u,y-v))
+\end{equation}
+
+\begin{equation}
+  \label{equ:similarity3}
+  p(u,v)=\left\lfloor \frac{\sqrt{u^2+v^2}}{2} + 0.5 \right\rfloor
+\end{equation}
+
+
+%% ヒストグラム$H_1=(n_1,i)$、$H_2=(n_2,i)$のヒストグラム交差は次のように定義される。
+The histogram intersection of histograms $H_1=(n_1,i)$ and $H_2=(n_2,i)$ is defined as follows:
+
+\begin{equation}
+  \label{equ:hist_intersection}
+  (0 \leq HI \leq C),HI(H_1,H_2)=\sum_{i} \min(n_{1,i},n_{2,i}) 
+\end{equation}
+
+
+%% また、$F(x,y)$の信頼度$R(x,y)$を求める：
+Also, find the confidence level $R(x,y)$ of $F(x,y)$:
+
+\begin{equation}
+  \label{equ:confidence}
+  R(x,y) =  \max_{u,v} S(u,v) - \bar{S} 
+\end{equation}
+
+\begin{equation}
+  \label{equ:mean_similarity}
+  \bar{S} = \frac{\sum_{u,v}S(u,v)}{K^2}
+\end{equation}
+
+%% $R(x,y)$は平均類似度と最大類似度の差であり、特異的に類似度の高いフローを優先的に選ぶ役割を果たす。
+
+The $R(x,y)$ is the difference between the mean similarity and maximum similarity and serves to preferentially select flows that are specifically similar.
+
+
+\subsection{Block-Mean-Optical FLow Calculation}\label{subsection:block-optical}
+
+%% 次に、画像を$B \times B$のサイズのちいさなブロックに分割し、各ブロックのオプティカルフローの平均を求める。
+%% $i$ブロックの中の$j$番目のピクセルのオプティカルフロー$F_i(j)=(u_ij,v_ij)$と信頼度$R_i(j)$
+%% から、以下のように計算する:
+
+
+Next, divide the image into tiny blocks of size $B \times B$ and find the average optical flow
+of each block From the optical flow $F_i(j)=(u_ij,v_ij)$ of the $j$th pixel
+in the $i$ block and the confidence level $R_i(j)$,
+calculate The following is calculated as follows:
+
+\begin{equation}
+  \label{equ:block_opt}
+   \bar F_i=(\bar u_i,\bar v_i)=
+   \left(   \frac{ \sum_ju_{ij} \times R_i(j) }{\sum_jR_i(j)} , \frac{ \sum_jv_{ij} \times R_i(j) }{\sum_jR_i(j)} \right)
+\end{equation}
+
+
+\subsection{BMFLC Filtering}\label{subsection:BMFLC_filtering}
+
+%% 求めた各ブロックの平均オプティカルフローに対して，BMFLCによるフィルタリングを独立に行う．
+%% BMFLCは，通過周波数帯$[f_{\mathit{lower}},f_{\mathit{upper}}]$を等間隔で$L$個
+%% のサブバンドに分割し，現在の時刻$t[\rm{sec}]$によって定まる
+%% 参照入力ベクトル$\bm{x}$を以下のように求める．
+
+
+The average optical flow of each block is independently filtered by BMFLC,
+which divides the passband $[f_{\mathit{lower}},f_{\mathit{upper}}]$ into
+$L$ subbands at equal intervals, with the current time $t[\rm{sec}]$,
+and the reference input vector $\bm{x}$ determined
+by the current time $t[{\rm{sec}}]$ is obtained as follows:
+
+\begin{align}
+  \label{equ:Vector}
+  & \bm{x} = (\sin \omega_0t,\ldots,\sin \omega_{L-1}t,
+  \cos \omega_0t,\ldots,cos \omega_{L-1}t)^T \\
+  &  \left(
+  \omega_r=2\pi \left( f_{\mathit{lower}} +
+  \frac{f_{\mathit{upper}}-f_{\mathit{lower}}}{L}r \right)
+  \right)
+\end{align}
+  
+
+   
+%% BMFLCの通過周波数帯は振戦の特徴を考慮し$8\sim12$ Hzとしている．
+%% ブロック$i$の水平及び垂直方向の適応重みベクトルを$\bm{w}_{x,i},\bm{w}_{y,i}$とすると，ブロック$i$の平均オプティカルフロー$\bar F'_i=(\bar u'_i,\bar v'_i)$は以下によって得られる:
+
+
+The pass frequency band of the BMFLC is set to $8^sim12$ Hz, considering the characteristics of the tremor.
+Let $\bm{w}_{x,i},\bm{w}_{y,i}$ be the horizontal and vertical adaptive weight vectors of block $i$,
+the mean optical flow $\bar F'_i=(\bar u'_i,\bar v'_i)$ of block $i$ is obtained by:
+
+
+\begin{equation}
+  \label{equ:}
+  \bar F'_i=(\bar u'_i,\bar v'_i) = (\bm{w}_{x,i}^T\bm{x} , \bm{w}_{y,i}^T\bm{x})
+\end{equation}
+
+
+ 
+%% また，ブロック$i$が指定した周波数帯域の振動をどの程度含んでいるかを示すブロック重み$W_i$を式\eqref{equation:equ16}より求める．
+
+The block weight $W_i$, which indicates the degree
+to which block $i$ contains vibrations in the specified frequency band,
+is obtained from the equation\eqref{equation:equ16}.
+
+
+ 
+ \begin{equation}
+   \label{equation:equ16}
+   W_i = \max \left(
+   \frac{ \|\bm{w}_{x,i}\|^1 + \|\bm{w}_{y,i}\|^1 }{2} - \tau ,0
+   \right)
+   \end{equation}
+
+
+ %% ここで，$\tau$は重みの値が一定値を下回るブロックを無視するための閾値である．
+ %% 適応重みベクトルの更新は以下のように行われる．
+ where $\tau$ is a threshold for ignoring blocks whose weights are below a certain value.
+ The update of the adaptive weight vector is performed as follows:
+ 
+\begin{align}
+  &\bm{w}_{x,i} \leftarrow
+  \bm{w}_{x,i} + 2\mu(\bar u_i - \bar u'_i)\bm{x} \\
+  &\bm{w}_{y,i} \leftarrow
+  \bm{w}_{y,i} + 2\mu(\bar v_i - \bar v'_i)\bm{x}
+\end{align}
+
+%% $\mu$はゲインパラメータであり，収束の速度と安定のバランスを
+%% 保つ役割がある．
+
+$mu$ is a gain parameter and serves to balance the speed and stability of convergence.
+ 
+%% 最後に，振動成分$(\Delta x , \Delta y)$を以下のように求める．
+Finally, the vibration component $(\Delta x , \Delta y)$ is obtained as follows:
+
+ \begin{equation}
+   \label{equation:equ17}
+   (\Delta x , \Delta y) = \left(
+   \frac{\sum_i ( \bar u'_i \times W_i )}{\sum_i W_i} , \frac{\sum_i ( \bar v'_i \times W_i )}{\sum_i W_i}
+   \right)
+ \end{equation}
+
+ %% これがシステムの最終的な出力である．
+ This is the final output of the system.

@@ -1,64 +1,61 @@
-\documentclass[a4paper, 12pt, dvipdfmx]{jsarticle}  
+\documentclass[conference]{style/IEEEtran}  
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage[dvipdfmx]{graphicx,color}
+\usepackage{textcomp}
+\usepackage{xcolor}
 
-\usepackage{geometry}
-\usepackage[dvipdfmx]{graphicx}
-\usepackage{booktabs}
-\usepackage[dvipdfmx]{color}
-\usepackage{amsmath,amssymb}
-\usepackage{url}
-\usepackage{listings,jlisting}
-\usepackage{here}
-\usepackage[dvipdfmx]{hyperref}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\usepackage{bm}
+
+%% \usepackage{geometry}
+%% \usepackage[dvipdfmx]{graphicx}
+%% \usepackage{booktabs}
+%% \usepackage[dvipdfmx]{color}
+%% \usepackage{amsmath,amssymb}
+%% \usepackage{url}
+%% \usepackage{listings,jlisting}
+%% \usepackage{here}
+%% \usepackage[dvipdfmx]{hyperref}
 
 
-\usepackage{ascmac}
+%% \usepackage{ascmac}
 
-\geometry{
-  left=15mm,
-  top=15mm,
-  right=15mm,
-  bottom=15mm
- }
+%% \geometry{
+%%   left=15mm,
+%%   top=15mm,
+%%   right=15mm,
+%%   bottom=15mm
+%%  }
+%% %
+%% \renewcommand{\lstlistingname}{コード}
+%% %
 
-
-%  ソースコード表示に関する設定
- \lstset{
-  basicstyle={\ttfamily},
-  identifierstyle={\small},
-  commentstyle={\smallitshape},
-  keywordstyle={\small\bfseries},
-  ndkeywordstyle={\small},
-  stringstyle={\small\ttfamily},
-  frame={tb},
-  breaklines=true,
-  columns=[l]{fullflexible},
-  numbers=left,
-  xrightmargin=0zw,
-  xleftmargin=3zw,
-  numberstyle={\scriptsize},
-  stepnumber=1,
-  numbersep=1zw,
-  lineskip=-0.5ex
-}
-
-%
-\renewcommand{\lstlistingname}{コード}
-%
-
-\title{hello}
-\author{yanagihara}
-\date{}
 
 %
 \begin{document}
 
+\title{test title}
+\author{
+  No Name
+  
+}
+
 \maketitle
+%% \input{src/0-template.tex}
 
-\input{src/0-template.tex}
+\input{src/1-intro.tex}
+\input{src/2-system.tex}
 
 
-\bibliographystyle{jplain}
-\bibliography{bib/0-refs.bib} 
+%% \bibliographystyle{jplain}
+\bibliographystyle{style/IEEEtran.bst}
+%% \bibliography{bib/0-refs.bib}
+\bibliography{bib/99-refs.bib}
 
 \end{document}
-%

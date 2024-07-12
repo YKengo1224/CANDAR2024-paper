@@ -1,0 +1,107 @@
+\section{Intoroduction}\label{section:intro}
+%% \cite{bib:neck_surgery}\cite{bib:reconstructive_microsurgery}．
+
+In recent surgical procedures, there is a surgical technique called microsurgery,
+in which delicate operations such as dissection and union of blood vessels and nerves are performed using loupes and microscopic cameras.
+
+%% このマイクロサージェリーは前述のとおり繊細な手術であることから，執刀医の手の不随意な振動である振戦が手術の妨げになっている．また，振戦を意識しながらの手術は執刀医に大きな負担がかかる．
+%% そのため，執刀医の振戦を抑制するシステムの導入により，安全性の向上や執刀医の負担の軽減が期待される
+
+Because microsurgery is a delicate procedure, as mentioned above, the involuntary vibration of the primary surgeon's hand, tremor, interferes with the operation.
+Surgery while being aware of the tremor places a heavy burden on the primary surgeon.
+Therefore, the introduction of a system that suppresses the tremor of the primary surgeon is expected to improve safety and reduce the burden on the primary surgeon.
+\cite{bib:Adaptive_cancelling}\cite{bib:Design_and_Validation}．
+
+
+
+%% 振戦を抑制する手法として，振戦の振動成分を抽出し逆位相の振動を手術器具に加えて抑制する手法が考えられる．
+%% しかし，振戦抽出のために加速度センサ等を手術器具の先端や執刀医の手元に取り付けることは繊細な手術の妨げとなる可能性があり，センサを用いた振戦抽出は望ましくない．
+%% また，執刀医の意図的な操作を妨げることのないように抽出した振動に対するフィルタリング機構が必要である．
+%% しかし，逆位相の振動による振戦抑制を行うためには逆位相の振動の位相遅れを最小限にする必要があるため，通常のバンドパスフィルタは適さない．
+
+One possible method to suppress tremor is to extract the vibration component of the tremor and apply vibration in the opposite phase to the surgical instrument to suppress it.
+However, the use of accelerometers or other sensors attached to the tips of surgical instruments or to the surgeon's hands for tremor extraction may interfere with delicate surgical procedures,
+and sensor-based tremor extraction is not desirable.
+In addition, a filtering mechanism for the extracted vibration is necessary so as not to interfere with the primary surgeon's intentional manipulation.
+However, to suppress tremor caused by vibrations in opposite phase, the phase delay of vibrations in opposite phase must be minimized, making an ordinary band-pass filter unsuitable.
+
+
+%% そこで眞邉らは，顕微鏡カメラより入力される動画像からリアルタイムに振戦の振動成分を抽出するシステムを提案し， 
+%% FPGAへ実装した\cite{bib:Image-Based_Vibration_Extraction}．
+ %% 眞邉らが提案したシステムは，動画像から特徴量マッチングを用いてオプティカルフローを推定し，位相遅れのない適応フィルタである
+ %% BMFLC（Bandlimited Multiple Fourier Linear Combiner）\cite{bib:BMFLC}
+ %% を用いてフィルタリングを行い，振戦の振動成分を抽出する．
+ %% しかし，眞邉らの提案システムは実機動作するシステムの定量的評価や，実際に抽出した振戦の逆位相の振動を出力する加振装置と接続しての抑制実験は行われていない．
+
+Therefore, Manabe et al. proposed a system to extract vibration components of a tremor in real time from a video image input from a microscope camera, and implemented the system in an FPGA.
+The system proposed by Manabe et al. estimates the optical flow from the video image using feature matching,
+filters it using BMFLC (Bandlimited Multiple Fourier Linear Combiner)\cite{bib:BMFLC},
+an adaptive filter with no phase delay, and extracts the vibration components of the tremor.
+The vibration component of the tremor is extracted. However, the system proposed by Manabe et al. has not been quantitatively evaluated in actual operation,
+nor have suppression experiments been conducted by connecting the system to a shaker that actually outputs vibration in the opposite phase of the extracted tremor.
+
+ 
+ %% そこで本研究では，眞邉らが提案した実機動作する振動抽出FPGAシステムの定量的評価と，
+ %% 振戦の抑制実験を行ってのシステムの有効性を示すことを目的とする．
+
+
+The purpose of this study is to quantitatively evaluate the vibration extraction FPGA system proposed by Manabe et al.
+and to demonstrate the effectiveness of the system by conducting experiments to suppress tremors.
+ 
+%% システムの定量的評価を行うためには振動成分の真値がわかる動画像をシステムに入力し，システムの出力を真値と比較する必要がある．
+
+
+%% \section{関連研究}\label{section:research}
+%% 振動抽出FPGAシステムの評価を行うために様々な関連研究が行われている．
+%% 本節では，振戦抑制システムの評価のための関連研究について述べる．
+
+%%   山下らは， SoC FPGAを用いてリアルタイム画像処理システムを定量的に評価するための検証プラットフォームを構築した\cite{bib:kensyo}．
+%% %%   この検証プラットフォームは，実機動作する
+%% %% FPGA画像処理システムに対してリアルタイムな検証用動画像の入力とそれに対する出力値の取得を可能にし，
+%% %% この出力値から実機動作するFPGA画像処理システムの定量的評価を行える検証環境である．
+%% 山下らの検証プラットフォームはSoC FPGAによるPS-PL通信を用いることでPL部に実装された実機動作する
+%% FPGA画像処理システムに対してリアルタイムな検証用動画像の入力とそれに対する出力値の取得を可能にし，
+%% この出力値から実機動作するFPGA画像処理システムの定量的評価を行える検証環境である．
+%% %% PS部ではUbuntu OSをブートさせており，ファイルシステムの利用やネットワーク接続など，
+%% %% より柔軟に評価を行うことができる．
+%% この検証環境を使用することにより，検証対象システムに大きな変更を加えることなく，
+%% 最小限の手順で画像処理システムの定量的評価を行うことが可能である．
+
+  
+  
+%% 中央大学では，磁気式3次元位置測定システムのVIPER\cite{bib:VIPER}とBMFLC-KF (BMFLC-Kalman Filter)\cite{bib:BMFLC-KF}と呼ばれる適応推定フィルタを用いて手術器具先端の振戦を検出し，
+%% 逆位相の振動をリニアアクチュエータを用いて手術器具先端に加振して振戦を抑制するハンドヘルド型の振動抑制装置を開発した．
+%% %% 日根らが開発した振戦抑制装置の構成を図\ref{figure:tremor_suppression_config}に示す．
+%% 振戦抑制装置は，ハンドヘルド部に手術器具を挿入し，内蔵されている  %% マイクロコンピュータであるTeensy4．0\cite{bib:Teensy4.0}等で構成される逆位相波発生装置を用いて
+%% 逆位相波発生装置を用いて
+%% 手術器具先端の振動の逆位相の振動を加振することで，振戦による器具先端の振動を抑制する．
+%% しかし，この振動推定の手法は手術器具先端にマイクロセンサを取り付ける必要があるため，実際の手術に用いることはできない．
+%% %% \begin{figure}[tb]
+%% %%   \centering
+%% %%   \includegraphics[width = 6cm]{img/environment/tremor_suppression_config.png}
+%% %%   \caption{振戦抑制装置の構成}
+%% %%   \label{figure:tremor_suppression_config}
+%% %% \end{figure}
+
+%% 田中らは，手術器具の模型をヒトが手に持った際の手術器具先端の水平方向の振戦を含む振動を測定し，測定した振動を高精度に再現する振戦再現装置を開発した\cite{bib:tremor_reproduction}．
+%% %% 田中らが開発した振戦再現装置の構成を図\ref{figure:tremor_reproduction_config}に示す.
+%% 振戦再現装置は，事前にVIPERを用いて測定した手術器具をヒトが保持した際の模型器具先端の振動を再現する．
+%% %% \begin{figure}[tb]
+%% %%   \centering
+%% %%   \includegraphics[width = 6cm]{img/environment/tremor_reproduction_config.png}
+%% %%   \caption{振戦再現装置の構成}
+%% %%   \label{figure:tremor_reproduction_config}
+%% %% \end{figure}
+
+
+
+
+%%  %% そこで本研究では，田中らが開発した振戦再現装置と山下らの検証プラットフォームを用いて，眞邉らが提案した振戦抽出システムの定量的評価を行う．
+%%  %% また，振戦抽出システムと日根らの振戦抑制装置内部の加振システムを接続するためのインタフェースを作成し，振戦抽出システムが抽出した振戦の振動の逆位相の振動を手術器具先端に加振する
+%%  %% 振戦の抑制テストを行い，システムの有効性を示す．
+
+
+%%  %% 本稿の構成は以下の通りである．まず，第2章で本研究の背景や目的を述べる．
+%%  %% 第3章では，本研究で利用するFPGAや，評価対象であるリアルタイム振戦抽出システムの概要について述べる．
+%%  %% 第4章では，振戦検出システムの評価の際に利用する評価環境について述べる．
+%%  %% 第5章では，振戦抽出システムの評価について述べ，最後に，第6章で本研究の結論を述べる．

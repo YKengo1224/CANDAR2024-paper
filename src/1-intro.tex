@@ -33,7 +33,7 @@ However, to suppress tremor caused by vibrations in opposite phase, the phase de
  %% を用いてフィルタリングを行い，振戦の振動成分を抽出する．
  %% しかし，眞邉らの提案システムは実機動作するシステムの定量的評価や，実際に抽出した振戦の逆位相の振動を出力する加振装置と接続しての抑制実験は行われていない．
 
-Therefore, Manabe et al. proposed a system to extract vibration components of a tremor in real time from a video image input from a microscope camera, and implemented the system in an FPGA.
+Therefore, Manabe et al. proposed a system to extract vibration components of a tremor in real time from a video image input from a microscope camera, and implemented the system in an FPGA.\cite{bib:Image-Based_Vibration_Extraction}
 The system proposed by Manabe et al. estimates the optical flow from the video image using feature matching,
 filters it using BMFLC (Bandlimited Multiple Fourier Linear Combiner)\cite{bib:BMFLC},
 an adaptive filter with no phase delay, and extracts the vibration components of the tremor.

@@ -96,12 +96,12 @@ of the system and evaluate how much the parameter values affect the extraction a
 %% この実験の概要を図\ref{figure:vibration_test}に示す。
 %% 検証プラットフォームを用いて振動抽出システムに模擬映像を入力する。
 %% 抽出結果を加振装置に入力し、手術器具の模型に加振する。
+%% 加振精度の評価を行うため、本実験でのみ逆位相の振動ではなく正位相の振動を加振する。
 %% その様子を３次元位置測定システムのVIPER\cite{bib:VIPER}を用いて計測する。
 %% この計測データを用いて評価を行う。
 %% 逆位相波加振装置との通信は表\ref{table:interface}に示す規格に従った。
 %% 一回の通信で、ヘッダー、フレームナンバー、手術器具の先端を移動させる位置のデータを送信する。
 %% 移動位置は、振動抽出開始時の位置からの相対位置を送信する。
-
 %% この実験を行うにあたり、逆位相波加振装置とのインタフェースをRTLで実装した。
 %% 振動抽出システムは１フレームの処理が完了すると、垂直方向の振動成分の抽出結果と、送信開始の信号をインタフェースに入力する。
 %% インタフェースは送信開始の信号を受け取ると、表\ref{table:interface}
@@ -120,6 +120,7 @@ to a antiphase vibratory apparatus to test the excitation to the surgical instru
 An overview of this experiment is shown in Figure \ref{figure:vibration_test}.
 Input the simulated video to the vibration extraction system using the validation platform.
 The extraction results are input to the vibratory apparatus and vibrations are applied to the model of the surgical instrument.
+In order to assess the accuracy of the vibration excitation, positive-phase vibration is applied instead of reverse-phase vibration only in this experiment.
 The situation is measured using the electromagnetic motion tracking system, VIPER\cite{bib:VIPER}.
 This measurement data is used for evaluation.
 The communication with the antiphase vibration apparatus followed the
@@ -175,10 +176,11 @@ Data is sent to the antiphase vibratory apparatus via serial communication (RS23
 %% 振戦再現装置は手術器具の模型をヒトが手に持った際の手術器具先端の振戦を含む振動を測定し，測定した振動を高精度に再現する．
 
 %% この実験の概要を図\ref{figure:suppression_test}に示す。
-%% まず、振戦再現装置を用いて手術器具の模型に振戦振動を再現する。
+%% まず、振戦再現装置を用いて手術器具の模型に0 Hzの定常波の振戦振動を再現する。
 %% その振動を顕微鏡カメラで捉え、撮影した映像をリアルタイムで振動抽出システムに入力して振戦振動を
 %% 抽出する。
 %% 抽出した振動情報をもとに逆位相波加振装置で振動抑制を行い、その様子VIPERで計測し評価を行う。
+%% 今回の実験では、10 Hzの定常波を手術器具の模型
 
 
 In this experiment, the vibration reproduction device developed by Tanaka et al.\cite{bib:tremor_reproduction_eng}
@@ -187,7 +189,13 @@ and the vibration is suppressed using a vibration extraction system and
 an antiphase wave apparatus. The vibration reproducer measures vibrations,
 including tremors at the tips of surgical instruments when a human holds a model of a surgical instrument in his/her hand,
 and reproduces the measured vibrations with high precision. An overview of this experiment is shown in Figure \ref{figure:suppression_test}.
-First, vibrations are reproduced on a model of a surgical instrument using a vibration reproduction device. The vibrations are captured by a microscope camera, and the captured images are input to the vibration extraction system real time to extract the vibrations. Based on the extracted vibration information, vibration suppression is performed using an inverse phase wave shaker, and the vibration is measured and evaluated using VIPER.
+First, vibrations are reproduced on a model of a surgical instrument using a vibration reproduction device.
+First, a vibration reproduction device is used to reproduce a 10 Hz stationary wave of tremor vibration
+on a model of a surgical instrument.
+The vibrations are captured by a microscope camera, and the captured images are input to the vibration extraction system
+real time to extract the vibrations. Based on the extracted vibration information,
+vibration suppression is performed using an inverse phase wave shaker,
+and the vibration is measured and evaluated using VIPER.
 
 
 

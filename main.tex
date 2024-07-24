@@ -40,17 +40,93 @@
 %
 \begin{document}
 
-\title{test title}
+\title{Vibration extraction FPGA system for stabilization of surgical instruments under a microscope in an actual experiment.}
+
+
+%% \author{
+%% Authors name are omitted for double blind review  
+%% }
+
 \author{
-Authors name are omitted for double blind review  
+  Kengo Yanagihara\IEEEauthorrefmark{1},
+  %% Keizo Yamashita\IEEEauthorrefmark{1},
+  Taito Manabe\IEEEauthorrefmark{1}, 
+  Yuichiro Shibata\IEEEauthorrefmark{1},\\
+  %% Masakatsu Tanaka\IEEEauthorrefmark{2},
+  Shunji Moromugi\IEEEauthorrefmark{2}, 
+  Masafumi Uematsu\IEEEauthorrefmark{3},
+  %% Takashi Kitaoka\IEEEauthorrefmark{3},
+  \\
+  \IEEEauthorrefmark{1}Graduate School of Engineering, Nagasaki University, 1--14 Bunkyo-machi, Nagasaki-shi, Nagasaki 852-8256,Japan\\
+  \IEEEauthorrefmark{2}Graduate School of Science and Engineering, Chuo University, 1--13--27 Kasuga, Bunkyo-ku, Tokyo 112-8551,Japan\\
+  \IEEEauthorrefmark{3}Ophthalmology, Nagasaki University Hospital, 1--7--1 Sakamoto, Nagasaki-shi, Nagasaki 852-8501,Japan\\
+  E-mail: \IEEEauthorrefmark{1}\{kengo,manabe,shibata\}@pca.cis.nagasaki-u.ac.jp
 }
 
+
 \maketitle
-%% \input{src/0-template.tex}
+
+\begin{abstract}
+  %% 本論文では、眞邊らが提案したマイクロサージェリーにおける振戦振動の抑制を実現するために提案した
+  %% リアルタイム振動抽出システムの評価を行う。
+  %% 実機動作すつ振動抽出システムの振動抽出精度、振動抑制の評価を行うため、３つの実験を行った。
+  %% まずはじめに、内視鏡手術の模擬映像を用いた振動抽出実験を行い、
+  %% システムの振動抽出精度を評価した。
+  %% また、複数のシステムパラメータの値で実験を行い抽出精度への影響度を評価した。その結果、一部のパラメータを変更することで振動の抽出精度が向上することがわかった。
+  %% 次に、振動抽出システムと逆位相波加振装置を接続し、加振実験を行った。
+  %% 振動抽出システムの出力値どおりに加振できるか、加振精度の評価を行った。
+  %% その結果、加振振動には意図しない高周波数成分が含まれており、精度良く加振をできているとは言えない
+  %% 結果だった。
+  %% 最後に、振戦振動を再現することができる振戦再現装置を用いて、振戦抑制実験を行った。
+  %% 抑制結果は加振振動の遅延や精度の影響もあり振戦振動の周波数帯域以外の振動が増加してしまっていたが、
+  %% 振戦振動の成分の減少を確認することができた。
+
+  This paper evaluates the real-time vibration extraction system proposed by Manabe et al.
+  to achieve vibration suppression in microsurgery.
+  Three experiments were conducted to evaluate the vibration extraction accuracy
+  and vibration suppression of the vibration extraction system in actual operation.
+  First, vibration extraction experiments were conducted using simulated endoscopic surgery video
+  to evaluate the vibration extraction accuracy of the system.
+  Experiments were also conducted with several values of system parameters to evaluate
+  their influence on the extraction accuracy.
+  The results showed that the vibration extraction accuracy could be improved
+  by changing some of the parameters.
+  Next, a vibration extraction system was connected to an antiphase vibratory apparatus
+  and vibration experiments were conducted.
+  The vibration accuracy was evaluated to see whether the vibrations could be extracted
+  as per the output values of the vibration extraction system.
+  The results showed that the vibrations included unintended high-frequency components,
+  and the system could not be said to be able to vibrate with good accuracy.
+  Finally, a vibration suppression experiment was carried out using a vibration reproduction device
+  that can reproduce vibration.
+  The suppression results showed an increase in vibrations outside the frequency band of
+  the tremor vibration, partly due to the delay and accuracy of the excitation vibration,
+  but it was possible to confirm a reduction in the components of the tremor vibration.
+
+  \begin{IEEEkeywords}
+    FPGA,Microsurgery,Optical Flow,BMFLC
+  \end{IEEEkeywords}
+  
+%% 本論文では  
+%% まず，システムの各パラメータが振動抽出動作にもたらす影響について評価を行い，
+%% 一部のパラメータを変更することで振動の抽出精度が向上することがわかった．
+%% 振戦抑制実験では，振戦振動の周波数成分の減少が確認できたが，
+%% それ以外の振動成分の増加が見受けられるなど，
+%% さらなる改善が必要な点も明らかになった．
+  %% This paper evaluates the extraction accuracy and vibration suppression
+  %% of the real-time image-based vibration extraction system proposed by Manabe et al.
+  %% First, the influence of each parameter of the system on the vibration extraction operation is evaluated,
+  %% and it is found that the vibration extraction accuracy can be improved by changing some parameters.
+  %% In the vibration suppression experiment, it was confirmed that the frequency component of the vibration was reduced,
+  %% but other vibration components were found to increase, indicating the need for further improvement.
+\end{abstract}
+
 
 \input{src/1-intro.tex}
 \input{src/2-system.tex}
 \input{src/3-methods.tex}
+\input{src/4-eval.tex}
+\input{src/5-cons.tex}
 
 %% \bibliographystyle{jplain}
 \bibliographystyle{style/IEEEtran.bst}
